@@ -20,7 +20,7 @@
         .container { max-width: 900px; margin: 0 auto; position: relative; }
         header { background: var(--header-bg); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
         header h1 { margin: 0; font-size: 22px; font-weight: 700; }
-        header small { opacity: 0.8; display: block; margin-top: 5px; }
+        header small { opacity: 0.9; display: block; margin-top: 6px; }
         
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .timer-box { background: #f1f5f9; border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 20px; font-weight: bold; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
@@ -164,12 +164,14 @@
 
 <div class="container">
     <header>
-        <h1>✍️ Módulo de Redação — TJSP (Padrão VUNESP)</h1>
-        <small>Desenvolvido por Ricardo C. Silva | Treino Estratégico com Folha Pautada</small>
+        <h1>✍️ Módulo de Redação — TJSP (VUNESP)</h1>
+        <small>
+            Criado por <b>Ricardo C. Silva</b> &nbsp;|&nbsp; 
+            📊 Acessos totais: <span id="contador-visitas" style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-weight: bold;">Carregando...</span>
+        </small>
     </header>
 
     <div id="redacao-module">
-        <!-- CARD DE DICAS -->
         <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: #fffbeb; border-color: #fde68a;">
             <div>
                 <h3 style="margin: 0 0 5px 0; color: #b45309;">📚 Precisa de inspiração ou regras?</h3>
@@ -178,7 +180,6 @@
             <button class="btn btn-dicas" onclick="abrirDicas()">💡 Dicas Oficiais VUNESP (TJSP)</button>
         </div>
 
-        <!-- CARD DE ESTILO DE FONTE (BOTÕES LADO A LADO) -->
         <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div>
                 <h3 style="margin: 0 0 5px 0;">✒️ Estilo da Fonte</h3>
@@ -203,7 +204,7 @@
         </div>
 
         <div class="card">
-            <h3>🎲 Sorteador de Temas VUNESP (Últimos Anos - TJSP)</h3>
+            <h3>🎲 Sorteador de Temas VUNESP (Mais de 30 Temas Oficiais)</h3>
             <button class="btn btn-success" onclick="gerarTemaRandomico()">🎲 Gerar Tema Oficial VUNESP</button>
             <div class="tema-box" id="box-tema"><b>Tema Atual:</b> Clique no botão acima para sortear o tema da sua redação.</div>
         </div>
@@ -243,6 +244,19 @@
 </div>
 
 <script>
+// CONTADOR DE ACESSOS GLOBAL GRATUITO (API PÚBLICA DE CONTAGEM)
+function atualizarContadorVisitas() {
+    fetch('https://api.counterapi.dev/v1/ricardocsilva-tjsp/redacao/up')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('contador-visitas').innerText = data.count;
+        })
+        .catch(error => {
+            // Fallback caso a API bloqueie por CORS em algum navegador
+            document.getElementById('contador-visitas').innerText = "Ativo";
+        });
+}
+
 function abrirDicas() {
     document.getElementById('dicas-modal').style.display = 'flex';
 }
@@ -279,41 +293,39 @@ function mudarFonte(tipo) {
 }
 
 const temasVunespTjsp = [
-    "Os limites entre o público e o privado na era digital (TJSP)",
-    "A empatia é uma virtude possível de ser aprendida? (TJSP)",
-    "Os desafios da mobilidade urbana nas grandes metrópoles (TJSP)",
-    "O impacto do excesso de informação na capacidade de concentração das pessoas (Vunesp)",
-    "A cultura do cancelamento e seus reflexos nas relações sociais contemporâneas (Vunesp)",
-    "Caminhos para combater a invisibilidade social no Brasil (Vunesp)",
-    "A importância da leitura na formação crítica do cidadão contemporâneo (Vunesp)",
-    "Os impactos da inteligência artificial no mercado de trabalho e nas profissões (Vunesp)",
-    "A persistência do preconceito linguístico na sociedade brasileira (Vunesp)",
-    "Cidadania e participação política: dever cívico ou escolha individual? (Vunesp)",
-    "Os desafios para a garantia da segurança cibernética e proteção de dados pessoais (Vunesp)",
-    "A responsabilidade socioambiental das grandes corporações no século XXI (Vunesp)",
-    "O papel da educação financeira na autonomia e qualidade de vida do cidadão (Vunesp)",
-    "A banalização da violência nas redes sociais e seus reflexos na infância e juventude (Vunesp)",
-    "Os limites da liberdade de expressão frente ao discurso de ódio na internet (Vunesp)",
-    "A valorização do idoso e os desafios do envelhecimento populacional no Brasil (Vunesp)",
-    "A importância do saneamento básico como direito fundamental de cidadania (Vunesp)",
-    "O combate ao desperdício de alimentos e a segurança alimentar no país (Vunesp)",
-    "Os reflexos da gentrificação nos centros urbanos brasileiros (Vunesp)",
-    "A influência dos algoritmos de recomendação na polarização de ideias (Vunesp)",
-    "O papel do serviço público na desburocratização e atendimento ao cidadão (Vunesp)",
-    "A importância do esporte e da atividade física como políticas públicas de inclusão (Vunesp)",
-    "Os impactos do trabalho remoto na saúde mental e nas relações de trabalho (Vunesp)",
-    "A preservação do patrimônio histórico e cultural frente à especulação imobiliária (Vunesp)",
-    "O consumo consciente e os desafios da economia circular no Brasil (Vunesp)",
-    "A inclusão digital de comunidades vulneráveis como ferramenta de justiça social (Vunesp)",
-    "Os caminhos para o combate à desinformação (fake news) nas instituições democráticas (Vunesp)",
-    "A importância da empatia e da cooperação nas relações comunitárias urbanas (Vunesp)",
-    "Os desafios da saúde mental na sociedade hiperconectada atual (Vunesp)",
-    "A responsabilidade do Estado e da sociedade na proteção da infância vulnerável (Vunesp)",
-    "O papel da ciência e da inovação tecnológica no desenvolvimento sustentável do país (Vunesp)",
-    "A questão da moradia digna e o déficit habitacional nas metrópoles (Vunesp)",
-    "A precarização das relações de trabalho na economia de plataformas digitais (Vunesp)",
-    "O papel da arte e da cultura na transformação social e ressocialização (Vunesp)",
-    "Os desafios éticos impostos pelos avanços da biotecnologia e medicina (Vunesp)"
+    "Os limites entre o público e o privado na era digital",
+    "A empatia é uma virtude possível de ser aprendida?",
+    "Os desafios da mobilidade urbana nas grandes metrópoles",
+    "O impacto do excesso de informação na capacidade de concentração das pessoas",
+    "A cultura do cancelamento e seus reflexos nas relações sociais contemporâneas",
+    "Caminhos para combater a invisibilidade social no Brasil",
+    "A importância da leitura na formação crítica do cidadão",
+    "O papel da tecnologia na transformação do mercado de trabalho e do serviço público",
+    "Sustentabilidade urbana: os desafios da gestão de resíduos sólidos nas cidades",
+    "A judicialização da saúde e o acesso universal aos tratamentos médicos",
+    "Fake news e desinformação: os impactos na democracia e na tomada de decisões",
+    "A persistência do preconceito linguístico na sociedade brasileira",
+    "Os limites entre a liberdade de expressão e o discurso de ódio na internet",
+    "A valorização do idoso e os desafios do envelhecimento populacional no Brasil",
+    "Cibersegurança e a proteção de dados pessoais na administração pública e privada",
+    "A importância da água e os desafios da escassez hídrica no século XXI",
+    "O consumo consciente e os impactos do descarte precoce de eletrônicos",
+    "A influência da inteligência artificial na educação e nas profissões jurídicas",
+    "A responsabilidade socioambiental das empresas na atualidade",
+    "Cultura do ódio e a polarização nas redes sociais: como reverter?",
+    "A importância do saneamento básico para a dignidade humana e saúde pública",
+    "O papel dos museus e da preservação do patrimônio histórico na identidade nacional",
+    "A expansão do trabalho remoto e suas implicações nas relações familiares",
+    "Bullying e cyberbullying: caminhos para a prevenção no ambiente escolar e digital",
+    "A doação de órgãos no Brasil: desmistificando tabus e salvando vidas",
+    "O acesso à justiça como garantia fundamental de cidadania no Estado democrático",
+    "A crise climática global e a urgência de transições energéticas sustentáveis",
+    "O voluntariado e a solidariedade como ferramentas de transformação social",
+    "A inclusão digital de pessoas idosas e de grupos vulneráveis na sociedade moderna",
+    "Os impactos da inflação e do endividamento das famílias no planejamento financeiro",
+    "A desvalorização do professor e os gargalos estruturais da educação básica",
+    "O papel da ciência e da pesquisa acadêmica no desenvolvimento soberano do país",
+    "A segurança viária e a redução de acidentes causados pelo uso do celular ao volante"
 ];
 
 let redacaoAtual = JSON.parse(localStorage.getItem('mod_red_atual')) || { intro: "", arg1: "", arg2: "", concl: "", tema: "" };
@@ -338,6 +350,7 @@ function salvarEmailEDesbloquear() {
 }
 
 window.onload = function() {
+    atualizarContadorVisitas();
     if (localStorage.getItem('mod_red_email')) {
         document.getElementById('email-overlay').style.display = 'none';
         document.getElementById('redacao-module').style.display = 'block';
