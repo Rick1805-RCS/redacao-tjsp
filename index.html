@@ -31,12 +31,14 @@
         .btn-danger { background: #dc2626; }
         .btn-secondary { background: #64748b; }
         .btn-ia { background: #8b5cf6; color: white; }
+        .btn-dicas { background: #d97706; color: white; }
         .btn-sm { padding: 6px 10px; font-size: 13px; }
 
         .tema-box { background: #eff6ff; border-left: 4px solid var(--accent); padding: 15px; border-radius: 6px; margin: 15px 0; color: #1e3a8a; font-size: 15px; }
         .redacao-section { margin-bottom: 15px; }
         .redacao-section h4 { margin: 0 0 5px 0; font-size: 14px; color: var(--accent); }
         
+        /* ESTILO DE CADERNO / FOLHA PAUTADA NAS TEXTAREAS */
         textarea {
             width: 100%;
             box-sizing: border-box;
@@ -65,6 +67,7 @@
 
         input[type="email"] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); font-family: inherit; }
 
+        /* TELA DE BLOQUEIO COM FUNDO ESMAECIDO */
         #email-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -81,6 +84,28 @@
         .email-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 10px; font-size: 22px; }
         .email-modal p { color: var(--text-muted); margin-bottom: 20px; font-size: 14px; line-height: 1.4; }
 
+        /* MODAL DE DICAS DE REDAÇÃO */
+        #dicas-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            justify-content: center; align-items: center;
+            z-index: 10000; padding: 20px; box-sizing: border-box;
+        }
+        .dicas-conteudo {
+            background: var(--card); padding: 30px; border-radius: 12px;
+            width: 100%; max-width: 650px; max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            line-height: 1.6; font-size: 14px;
+        }
+        .dicas-conteudo h3 { color: var(--accent); margin-top: 0; }
+        .dicas-conteudo h4 { color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 4px; margin-top: 20px; }
+        .dicas-conteudo ul { padding-left: 20px; margin: 8px 0; }
+        .dicas-conteudo li { margin-bottom: 6px; }
+
+        /* TOAST DE FEEDBACK DE CÓPIA */
         #toast-feedback {
             position: fixed; bottom: 30px; right: 30px;
             background: #16a34a; color: white; padding: 12px 20px;
@@ -96,6 +121,7 @@
 </head>
 <body>
 
+    <!-- TELA ESMAECIDA OBRIGATÓRIA ANTES DE ENTRAR NO MÓDULO -->
     <div id="email-overlay">
         <div class="email-modal">
             <h2>🔒 Digite seu E-mail</h2>
@@ -107,6 +133,40 @@
         </div>
     </div>
 
+    <!-- JANELA DE DICAS (MODAL) -->
+    <div id="dicas-modal">
+        <div class="dicas-conteudo">
+            <h3>💡 Guia Estratégico & Dicas para a VUNESP (TJSP)</h3>
+            <p>Este guia reúne os padrões exigidos pela banca examinadora para assegurar uma excelente nota.</p>
+            
+            <h4>1. Conectivos e Coesão Obrigatórios</h4>
+            <ul>
+                <b>Início do Desenvolvimento 1:</b> Ademais, Outrossim, Em primeiro lugar, Sob esse viés.<br>
+                <b>Início do Desenvolvimento 2:</b> Por conseguinte, Ademais, Outrossim, Em contrapartida.<br>
+                <b>Início da Conclusão:</b> Destarte, Portanto, Em suma, Logo, Infere-se, pois, que.
+            </ul>
+
+            <h4>2. Repertório Sociocultural Curinga</h4>
+            <ul>
+                <li><b>Constituição Federal de 1988 (Art. 5º ou Art. 6º):</b> Excelente para temas que abordam direitos fundamentais, saúde, educação, segurança ou cidadania.</li>
+                <li><b>Zygmunt Bauman (Modernidade Líquida):</b> Perfeito para reflexões sobre relações sociais frágeis, excesso de tecnologia e individualismo na era digital.</li>
+                <li><b>Thomas Hobbes (O Contrato Social / O Leviatã):</b> Ideal para discutir o papel do Estado na garantia da ordem pública e bem-estar coletivo.</li>
+            </ul>
+
+            <h4>3. Armadilhas Gramaticais Frequentes na VUNESP</h4>
+            <ul>
+                <li><b>Vírgula Proibida:</b> Nunca separe o sujeito do predicado por vírgula (Ex: <i>"O acesso à justiça [SUJEITO], deve ser garantido [VERBO]"</i> — ERRADO).</li>
+                <li><b>Uso de Crase:</b> Lembre-se de que regência nominal/verbal antes de palavras femininas exige atenção (Ex: <i>à medida que, à proporção que, visando a</i>).</li>
+                <li><b>Concordância Verbal:</b> Cuidado com verbos impessoais como <i>Haver</i> (no sentido de existir fica invariável: <i>"Houve problemas"</i> e não "houveram").</li>
+            </ul>
+
+            <div style="text-align: right; margin-top: 25px;">
+                <button class="btn btn-secondary" onclick="fecharDicas()">Fechar Guia</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST DE ALERTA -->
     <div id="toast-feedback">Prompt copiado com sucesso! Abrindo o Gemini...</div>
 
 <div class="container">
@@ -116,6 +176,15 @@
     </header>
 
     <div id="redacao-module">
+        <!-- BOTÃO DE DICAS DE PORTUGUÊS E REPERTÓRIO -->
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: #fffbeb; border-color: #fde68a;">
+            <div>
+                <h3 style="margin: 0 0 5px 0; color: #b45309;">📚 Precisa de inspiração ou regras?</h3>
+                <small style="color: #92400e;">Consulte dicas de gramática, conectivos e repertórios curingas VUNESP.</small>
+            </div>
+            <button class="btn btn-dicas" onclick="abrirDicas()">💡 Dicas Oficiais VUNESP (TJSP)</button>
+        </div>
+
         <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div>
                 <h3 style="margin: 0 0 5px 0;">✒️ Estilo da Fonte</h3>
@@ -180,6 +249,15 @@
 </div>
 
 <script>
+// FUNÇÕES DO MODAL DE DICAS
+function abrirDicas() {
+    document.getElementById('dicas-modal').style.display = 'flex';
+}
+function fecharDicas() {
+    document.getElementById('dicas-modal').style.display = 'none';
+}
+
+// CRONÔMETRO
 let timerInterval;
 let timerSeconds = 0;
 function startTimer() {
