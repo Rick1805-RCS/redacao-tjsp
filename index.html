@@ -32,7 +32,16 @@
         .btn-secondary { background: #64748b; }
         .btn-ia { background: #8b5cf6; color: white; }
         .btn-dicas { background: #d97706; color: white; }
-        .btn-sm { padding: 6px 10px; font-size: 13px; }
+        .btn-sm { padding: 8px 14px; font-size: 13px; }
+
+        /* BOTÕES EM COLUNA / VERTICAL À ESQUERDA */
+        .btn-vertical-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 12px;
+        }
 
         .tema-box { background: #eff6ff; border-left: 4px solid var(--accent); padding: 15px; border-radius: 6px; margin: 15px 0; color: #1e3a8a; font-size: 15px; }
         .redacao-section { margin-bottom: 15px; }
@@ -176,21 +185,20 @@
     </header>
 
     <div id="redacao-module">
-        <!-- BOTÃO DE DICAS DE PORTUGUÊS E REPERTÓRIO -->
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: #fffbeb; border-color: #fde68a;">
-            <div>
-                <h3 style="margin: 0 0 5px 0; color: #b45309;">📚 Precisa de inspiração ou regras?</h3>
-                <small style="color: #92400e;">Consulte dicas de gramática, conectivos e repertórios curingas VUNESP.</small>
+        <!-- CARD DE DICAS COM BOTÃO NA VERTICAL À ESQUERDA -->
+        <div class="card" style="background: #fffbeb; border-color: #fde68a;">
+            <h3 style="margin: 0 0 5px 0; color: #b45309;">📚 Precisa de inspiração ou regras?</h3>
+            <small style="color: #92400e; display: block;">Consulte dicas de gramática, conectivos e repertórios curingas VUNESP.</small>
+            <div class="btn-vertical-group">
+                <button class="btn btn-dicas" onclick="abrirDicas()">💡 Dicas Oficiais VUNESP (TJSP)</button>
             </div>
-            <button class="btn btn-dicas" onclick="abrirDicas()">💡 Dicas Oficiais VUNESP (TJSP)</button>
         </div>
 
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-            <div>
-                <h3 style="margin: 0 0 5px 0;">✒️ Estilo da Fonte</h3>
-                <small style="color: var(--text-muted);">Alterne entre letra de forma ou cursiva</small>
-            </div>
-            <div style="display: flex; gap: 10px;">
+        <!-- CARD DE ESTILO DE FONTE COM BOTÕES NA VERTICAL À ESQUERDA -->
+        <div class="card">
+            <h3 style="margin: 0 0 5px 0;">✒️ Estilo da Fonte</h3>
+            <small style="color: var(--text-muted); display: block;">Alterne entre letra de forma ou cursiva</small>
+            <div class="btn-vertical-group">
                 <button class="btn btn-sm btn-secondary" id="btn-forma" onclick="mudarFonte('forma')">Letra de Forma</button>
                 <button class="btn btn-sm btn-secondary" id="btn-cursiva" onclick="mudarFonte('cursiva')">Letra Cursiva</button>
             </div>
@@ -249,7 +257,6 @@
 </div>
 
 <script>
-// FUNÇÕES DO MODAL DE DICAS
 function abrirDicas() {
     document.getElementById('dicas-modal').style.display = 'flex';
 }
@@ -257,7 +264,6 @@ function fecharDicas() {
     document.getElementById('dicas-modal').style.display = 'none';
 }
 
-// CRONÔMETRO
 let timerInterval;
 let timerSeconds = 0;
 function startTimer() {
