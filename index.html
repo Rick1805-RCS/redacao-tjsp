@@ -25,7 +25,7 @@
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .timer-box { background: #f1f5f9; border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 20px; font-weight: bold; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
 
-        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; display: inline-block; text-align: center; }
         .btn:hover { opacity: 0.9; }
         .btn-success { background: #16a34a; }
         .btn-danger { background: #dc2626; }
@@ -34,20 +34,20 @@
         .btn-dicas { background: #d97706; color: white; }
         .btn-sm { padding: 8px 14px; font-size: 13px; }
 
-        /* BOTÕES EM COLUNA / VERTICAL À ESQUERDA */
-        .btn-vertical-group {
+        /* FORÇAR BOTÕES NA VERTICAL (UM ABAIXO DO OUTRO) */
+        .botoes-verticais {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 15px;
+            width: 100%;
         }
 
         .tema-box { background: #eff6ff; border-left: 4px solid var(--accent); padding: 15px; border-radius: 6px; margin: 15px 0; color: #1e3a8a; font-size: 15px; }
         .redacao-section { margin-bottom: 15px; }
         .redacao-section h4 { margin: 0 0 5px 0; font-size: 14px; color: var(--accent); }
         
-        /* ESTILO DE CADERNO / FOLHA PAUTADA NAS TEXTAREAS */
         textarea {
             width: 100%;
             box-sizing: border-box;
@@ -76,7 +76,6 @@
 
         input[type="email"] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); font-family: inherit; }
 
-        /* TELA DE BLOQUEIO COM FUNDO ESMAECIDO */
         #email-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -93,7 +92,6 @@
         .email-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 10px; font-size: 22px; }
         .email-modal p { color: var(--text-muted); margin-bottom: 20px; font-size: 14px; line-height: 1.4; }
 
-        /* MODAL DE DICAS DE REDAÇÃO */
         #dicas-modal {
             display: none;
             position: fixed;
@@ -114,7 +112,6 @@
         .dicas-conteudo ul { padding-left: 20px; margin: 8px 0; }
         .dicas-conteudo li { margin-bottom: 6px; }
 
-        /* TOAST DE FEEDBACK DE CÓPIA */
         #toast-feedback {
             position: fixed; bottom: 30px; right: 30px;
             background: #16a34a; color: white; padding: 12px 20px;
@@ -130,7 +127,6 @@
 </head>
 <body>
 
-    <!-- TELA ESMAECIDA OBRIGATÓRIA ANTES DE ENTRAR NO MÓDULO -->
     <div id="email-overlay">
         <div class="email-modal">
             <h2>🔒 Digite seu E-mail</h2>
@@ -142,7 +138,6 @@
         </div>
     </div>
 
-    <!-- JANELA DE DICAS (MODAL) -->
     <div id="dicas-modal">
         <div class="dicas-conteudo">
             <h3>💡 Guia Estratégico & Dicas para a VUNESP (TJSP)</h3>
@@ -175,7 +170,6 @@
         </div>
     </div>
 
-    <!-- TOAST DE ALERTA -->
     <div id="toast-feedback">Prompt copiado com sucesso! Abrindo o Gemini...</div>
 
 <div class="container">
@@ -185,20 +179,20 @@
     </header>
 
     <div id="redacao-module">
-        <!-- CARD DE DICAS COM BOTÃO NA VERTICAL À ESQUERDA -->
+        <!-- CARD DE DICAS -->
         <div class="card" style="background: #fffbeb; border-color: #fde68a;">
             <h3 style="margin: 0 0 5px 0; color: #b45309;">📚 Precisa de inspiração ou regras?</h3>
             <small style="color: #92400e; display: block;">Consulte dicas de gramática, conectivos e repertórios curingas VUNESP.</small>
-            <div class="btn-vertical-group">
+            <div class="botoes-verticais">
                 <button class="btn btn-dicas" onclick="abrirDicas()">💡 Dicas Oficiais VUNESP (TJSP)</button>
             </div>
         </div>
 
-        <!-- CARD DE ESTILO DE FONTE COM BOTÕES NA VERTICAL À ESQUERDA -->
+        <!-- CARD DE ESTILO DE FONTE -->
         <div class="card">
             <h3 style="margin: 0 0 5px 0;">✒️ Estilo da Fonte</h3>
             <small style="color: var(--text-muted); display: block;">Alterne entre letra de forma ou cursiva</small>
-            <div class="btn-vertical-group">
+            <div class="botoes-verticais">
                 <button class="btn btn-sm btn-secondary" id="btn-forma" onclick="mudarFonte('forma')">Letra de Forma</button>
                 <button class="btn btn-sm btn-secondary" id="btn-cursiva" onclick="mudarFonte('cursiva')">Letra Cursiva</button>
             </div>
