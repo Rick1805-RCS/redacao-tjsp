@@ -64,24 +64,6 @@
             font-size: 1rem;
         }
 
-        input[type="email"] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); font-family: inherit; }
-
-        #email-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(5px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 9999; padding: 20px; box-sizing: border-box;
-        }
-        .email-modal {
-            background: var(--card); padding: 35px 30px; border-radius: 12px;
-            width: 100%; max-width: 400px; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .email-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 10px; font-size: 22px; }
-        .email-modal p { color: var(--text-muted); margin-bottom: 20px; font-size: 14px; line-height: 1.4; }
-
         #dicas-modal {
             display: none;
             position: fixed;
@@ -109,25 +91,13 @@
             display: none; z-index: 1000; transition: opacity 0.3s;
         }
 
-        #redacao-module { display: none; }
         .historico-item { background: #f1f5f9; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        
         footer.dev-footer { text-align: center; margin-top: 30px; color: var(--text-muted); font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div id="email-overlay">
-        <div class="email-modal">
-            <h2>🔒 Digite seu E-mail</h2>
-            <p>Para liberar o acesso gratuito ao módulo de redação e ao gerador de temas VUNESP, digite seu e-mail abaixo:</p>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <input type="email" id="user-email" placeholder="seu.melhor.email@exemplo.com" required>
-                <button class="btn btn-success" onclick="salvarEmailEDesbloquear()">Entrar no Módulo</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- JANELA DE DICAS (MODAL) -->
     <div id="dicas-modal">
         <div class="dicas-conteudo">
             <h3>💡 Guia Estratégico & Dicas para a VUNESP (TJSP)</h3>
@@ -160,11 +130,12 @@
         </div>
     </div>
 
+    <!-- TOAST DE ALERTA -->
     <div id="toast-feedback">Prompt copiado com sucesso! Abrindo o Gemini...</div>
 
 <div class="container">
     <header>
-        <h1>✍️ Módulo de Redação — TJSP (VUNESP)</h1>
+        <h1>✍️ Módulo de Redação — TJSP (Padrão VUNESP)</h1>
         <small>
             Criado por <b>Ricardo C. Silva</b> &nbsp;|&nbsp; 
             📊 Acessos totais: <span id="contador-visitas" style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-weight: bold;">Carregando...</span>
@@ -244,7 +215,6 @@
 </div>
 
 <script>
-// CONTADOR DE ACESSOS GLOBAL GRATUITO (API PÚBLICA DE CONTAGEM)
 function atualizarContadorVisitas() {
     fetch('https://api.counterapi.dev/v1/ricardocsilva-tjsp/redacao/up')
         .then(response => response.json())
@@ -252,7 +222,6 @@ function atualizarContadorVisitas() {
             document.getElementById('contador-visitas').innerText = data.count;
         })
         .catch(error => {
-            // Fallback caso a API bloqueie por CORS em algum navegador
             document.getElementById('contador-visitas').innerText = "Ativo";
         });
 }
@@ -331,31 +300,9 @@ const temasVunespTjsp = [
 let redacaoAtual = JSON.parse(localStorage.getItem('mod_red_atual')) || { intro: "", arg1: "", arg2: "", concl: "", tema: "" };
 let historicoRedacoes = JSON.parse(localStorage.getItem('mod_red_historico')) || [];
 
-function salvarEmailEDesbloquear() {
-    const emailInput = document.getElementById('user-email');
-    const email = emailInput ? emailInput.value.trim() : "";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!email || !emailRegex.test(email)) {
-        alert("Por favor, insira um e-mail válido.");
-        return;
-    }
-
-    console.log("E-mail enviado para o database:", email);
-    localStorage.setItem('mod_red_email', email);
-    
-    document.getElementById('email-overlay').style.display = 'none';
-    document.getElementById('redacao-module').style.display = 'block';
-    carregarDados();
-}
-
 window.onload = function() {
     atualizarContadorVisitas();
-    if (localStorage.getItem('mod_red_email')) {
-        document.getElementById('email-overlay').style.display = 'none';
-        document.getElementById('redacao-module').style.display = 'block';
-        carregarDados();
-    }
+    carregarDados();
     let fonteSalva = localStorage.getItem('mod_red_tipo_fonte') || 'forma';
     mudarFonte(fonteSalva);
 }
