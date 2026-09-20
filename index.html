@@ -1,1 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Redação — TJSP VUNESP</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --text: #334155;
+            --text-muted: #64748b;
+            --header-bg: #1e293b;
+        }
 
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; position: relative; }
+        header { background: var(--header-bg); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+        header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+        header small { opacity: 0.8; display: block; margin-top: 5px; }
+        
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .timer-box { background: #f1f5f9; border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 20px; font-weight: bold; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+
+        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-success { background: #16a34a; }
+        .btn-danger { background: #dc2626; }
+        .btn-secondary { background: #64748b; }
+        .btn-ia { background: #8b5cf6; color: white; }
+        .btn-sm { padding: 6px 10px; font-size: 13px; }
+
+        .tema-box { background: #eff6ff; border-left: 4px solid var(--accent); padding: 15px; border-radius: 6px; margin: 15px 0; color: #1e3a8a; font-size: 15px; }
+        .redacao-section { margin-bottom: 15px; }
+        .redacao-section h4 { margin: 0 0 5px 0; font-size: 14px; color: var(--accent); }
+        
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background-color: #fffdf9;
+            color: #1e293b;
+            font-size: 1.05rem;
+            line-height: 32px;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 31px, #e2e8f0 31px, #e2e8f0 32px);
+            background-attachment: local;
+            resize: vertical;
+            min-height: 160px;
+        }
+
+        textarea.fonte-cursiva {
+            font-family: 'Brush Script MT', 'Lucida Handwriting', 'Segoe Script', cursive;
+            font-size: 1.25rem;
+        }
+
+        textarea.fonte-forma {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 1rem;
+        }
+
+        input[type="email"] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); font-family: inherit; }
+
+        #email-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; padding: 20px; box-sizing: border-box;
+        }
+        .email-modal {
+            background: var(--card); padding: 35px 30px; border-radius: 12px;
+            width: 100%; max-width: 400px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .email-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 10px; font-size: 22px; }
+        .email-modal p { color: var(--text-muted); margin-bottom: 20px; font-size: 14px; line-height: 1.4; }
+
+        #toast-feedback {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #16a34a; color: white; padding: 12px 20px;
+            border-radius: 8px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none; z-index: 1000; transition: opacity 0.3s;
+        }
+
+        #redacao-module { display: none; }
+        .historico-item { background: #f1f5f9; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        
+        footer.dev-footer { text-align: center; margin-top: 30px; color: var(--text-muted); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div id="email-overlay">
+        <div class="email-modal">
+            <h2>🔒 Digite seu E-mail</h2>
+            <p>Para liberar o acesso gratuito ao módulo de redação e ao gerador de temas VUNESP, digite seu e-mail abaixo:</p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="email" id="user-email" placeholder="seu.melhor.email@exemplo.com" required>
+                <button class="btn btn-success" onclick="salvarEmailEDesbloquear()">Entrar no Módulo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-feedback">Prompt copiado com sucesso! Abrindo o Gemini...</div>
+
+<div class="container">
+    <header>
+        <h1>✍️ Módulo de Redação — TJSP (Padrão VUNESP)</h1>
+        <small>Desenvolvido por Ricardo C. Silva | Treino Estratégico com Folha Pautada</small>
+    </header>
+
+    <div id="redacao-module">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h3 style="margin: 0 0 5px 0;">✒️ Estilo da Fonte</h3>
+                <small style="color: var(--text-muted);">Alterne entre letra de forma ou cursiva</small>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-sm btn-secondary" id="btn-forma" onclick="mudarFonte('forma')">Letra de Forma</button>
+                <button class="btn btn-sm btn-secondary" id="btn-cursiva" onclick="mudarFonte('cursiva')">Letra Cursiva</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>⏱️ Cronômetro da Redação</h3>
+            <div class="timer-box">
+                <span id="timer-display">00:00:00</span>
+                <div style="display: flex; gap: 5px;">
+                    <button class="btn btn-sm btn-success" onclick="startTimer()">▶ Iniciar</button>
+                    <button class="btn btn-sm btn-secondary" onclick="pauseTimer()">⏸ Pausar</button>
+                    <button class="btn btn-sm btn-danger" onclick="resetTimer()">🔄 Zerar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🎲 Sorteador de Temas VUNESP (Últimos Anos - TJSP)</h3>
+            <button class="btn btn-success" onclick="gerarTemaRandomico()">🎲 Gerar Tema Oficial VUNESP</button>
+            <div class="tema-box" id="box-tema"><b>Tema Atual:</b> Clique no botão acima para sortear o tema da sua redação.</div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                <h3>📝 Estrutura do Texto Dissertativo-Argumentativo</h3>
+                <div style="font-weight: bold; font-size: 14px;" id="contador-linhas-box">
+                    Total: <span id="total-palavras">0</span> palavras | Linhas estimadas: <span id="total-linhas" style="color: var(--accent);">0</span> / 30
+                </div>
+            </div>
+
+            <div class="redacao-section"><h4>1. Introdução</h4><textarea id="red-intro" class="fonte-forma" placeholder="Apresentação do tema + Tese clara..." oninput="atualizarContadores()"></textarea></div>
+            <div class="redacao-section"><h4>2. Desenvolvimento 1</h4><textarea id="red-arg1" class="fonte-forma" placeholder="Desenvolvimento do primeiro argumento..." oninput="atualizarContadores()"></textarea></div>
+            <div class="redacao-section"><h4>3. Desenvolvimento 2</h4><textarea id="red-arg2" class="fonte-forma" placeholder="Desenvolvimento do segundo argumento..." oninput="atualizarContadores()"></textarea></div>
+            <div class="redacao-section"><h4>4. Conclusão</h4><textarea id="red-concl" class="fonte-forma" placeholder="Fechamento do texto e retomada da tese..." oninput="atualizarContadores()"></textarea></div>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                <button class="btn btn-success" onclick="salvarHistoricoRedacao()">💾 Salvar no Histórico</button>
+                <button class="btn btn-ia" onclick="enviarParaAvaliacaoIA()">🎓 Avaliar no Chat Gemini (VUNESP)</button>
+                <button class="btn btn-danger" onclick="limparCamposTexto()">🗑️ Limpar Campos</button>
+                <button class="btn btn-secondary" onclick="exportarTextoRedacao()">📄 Exportar (.txt)</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📚 Histórico de Redações Salvas</h3>
+            <div id="lista-historico">
+                <p style="color: var(--text-muted); font-size: 13px;">Nenhuma redação salva no histórico ainda.</p>
+            </div>
+        </div>
+
+        <footer class="dev-footer">
+            Módulo de Redação TJSP — Criado por <b>Ricardo C. Silva</b>
+        </footer>
+    </div>
+</div>
+
+<script>
+let timerInterval;
+let timerSeconds = 0;
+function startTimer() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+        timerSeconds++;
+        let hrs = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+        let mins = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+        let secs = String(timerSeconds % 60).padStart(2, '0');
+        document.getElementById('timer-display').innerText = `${hrs}:${mins}:${secs}`;
+    }, 1000);
+}
+function pauseTimer() { clearInterval(timerInterval); timerInterval = null; }
+function resetTimer() { pauseTimer(); timerSeconds = 0; document.getElementById('timer-display').innerText = "00:00:00"; }
+
+function mudarFonte(tipo) {
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(ta => {
+        ta.classList.remove('fonte-cursiva', 'fonte-forma');
+        if (tipo === 'cursiva') {
+            ta.classList.add('fonte-cursiva');
+        } else {
+            ta.classList.add('fonte-forma');
+        }
+    });
+    localStorage.setItem('mod_red_tipo_fonte', tipo);
+}
+
+const temasVunespTjsp = [
+    "Os limites entre o público e o privado na era digital (TJSP)",
+    "A empatia é uma virtude possível de ser aprendida? (TJSP)",
+    "Os desafios da mobilidade urbana nas grandes metrópoles (TJSP)",
+    "O impacto do excesso de informação na capacidade de concentração das pessoas (Vunesp)",
+    "A cultura do cancelamento e seus reflexos nas relações sociais contemporâneas (Vunesp)",
+    "Caminhos para combater a invisibilidade social no Brasil (Vunesp)"
+];
+
+let redacaoAtual = JSON.parse(localStorage.getItem('mod_red_atual')) || { intro: "", arg1: "", arg2: "", concl: "", tema: "" };
+let historicoRedacoes = JSON.parse(localStorage.getItem('mod_red_historico')) || [];
+
+function salvarEmailEDesbloquear() {
+    const emailInput = document.getElementById('user-email');
+    const email = emailInput ? emailInput.value.trim() : "";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRegex.test(email)) {
+        alert("Por favor, insira um e-mail válido.");
+        return;
+    }
+
+    console.log("E-mail enviado para o database:", email);
+    localStorage.setItem('mod_red_email', email);
+    
+    document.getElementById('email-overlay').style.display = 'none';
+    document.getElementById('redacao-module').style.display = 'block';
+    carregarDados();
+}
+
+window.onload = function() {
+    if (localStorage.getItem('mod_red_email')) {
+        document.getElementById('email-overlay').style.display = 'none';
+        document.getElementById('redacao-module').style.display = 'block';
+        carregarDados();
+    }
+    let fonteSalva = localStorage.getItem('mod_red_tipo_fonte') || 'forma';
+    mudarFonte(fonteSalva);
+}
+
+function atualizarContadores() {
+    let intro = document.getElementById('red-intro').value;
+    let arg1 = document.getElementById('red-arg1').value;
+    let arg2 = document.getElementById('red-arg2').value;
+    let concl = document.getElementById('red-concl').value;
+
+    let textoTotal = `${intro} ${arg1} ${arg2} ${concl}`.trim();
+    let palavras = textoTotal ? textoTotal.split(/\s+/).length : 0;
+    let linhas = Math.round(palavras / 9);
+
+    document.getElementById('total-palavras').innerText = palavras;
+    let lblLinhas = document.getElementById('total-linhas');
+    lblLinhas.innerText = linhas;
+
+    let boxLinhas = document.getElementById('contador-linhas-box');
+    if (linhas > 30) {
+        lblLinhas.style.color = "#dc2626";
+        boxLinhas.title = "Atenção: Ultrapassou o limite médio de 30 linhas da folha oficial!";
+    } else {
+        lblLinhas.style.color = "var(--accent)";
+        boxLinhas.title = "";
+    }
+
+    redacaoAtual = { intro, arg1, arg2, concl, tema: redacaoAtual.tema };
+    localStorage.setItem('mod_red_atual', JSON.stringify(redacaoAtual));
+}
+
+function carregarDados() {
+    document.getElementById('red-intro').value = redacaoAtual.intro || ""; 
+    document.getElementById('red-arg1').value = redacaoAtual.arg1 || ""; 
+    document.getElementById('red-arg2').value = redacaoAtual.arg2 || ""; 
+    document.getElementById('red-concl').value = redacaoAtual.concl || ""; 
+    if (redacaoAtual.tema) {
+        document.getElementById('box-tema').innerHTML = `<b>Tema Sorteado:</b> ${redacaoAtual.tema}`;
+    }
+    atualizarContadores();
+    renderizarHistorico();
+}
+
+function gerarTemaRandomico() {
+    const sorted = temasVunespTjsp[Math.floor(Math.random() * temasVunespTjsp.length)];
+    document.getElementById('box-tema').innerHTML = `<b>Tema Sorteado:</b> ${sorted}`; 
+    redacaoAtual.tema = sorted; 
+    localStorage.setItem('mod_red_atual', JSON.stringify(redacaoAtual));
+}
+
+function limparCamposTexto() {
+    if (confirm("Deseja limpar todos os campos de texto da redação atual?")) {
+        document.getElementById('red-intro').value = "";
+        document.getElementById('red-arg1').value = "";
+        document.getElementById('red-arg2').value = "";
+        document.getElementById('red-concl').value = "";
+        atualizarContadores();
+    }
+}
+
+function salvarHistoricoRedacao() {
+    if (!redacaoAtual.tema) redacaoAtual.tema = "Tema Livre / Sem Sorteio";
+    let dataRegistro = new Date().toLocaleDateString('pt-BR');
+    
+    historicoRedacoes.unshift({
+        data: dataRegistro,
+        tema: redacaoAtual.tema,
+        conteudo: { ...redacaoAtual }
+    });
+
+    localStorage.setItem('mod_red_historico', JSON.stringify(historicoRedacoes));
+    renderizarHistorico();
+    mostrarToast("Redação salva no histórico com sucesso!");
+}
+
+function renderizarHistorico() {
+    const container = document.getElementById('lista-historico');
+    if (historicoRedacoes.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted); font-size: 13px;">Nenhuma redação salva no histórico ainda.</p>`;
+        return;
+    }
+
+    container.innerHTML = '';
+    historicoRedacoes.forEach((item, index) => {
+        let div = document.createElement('div');
+        div.className = 'historico-item';
+        div.innerHTML = `
+            <div><b>${item.data}</b> — ${item.tema}</div>
+            <div style="display: flex; gap: 5px;">
+                <button class="btn btn-sm btn-secondary" onclick="carregarDoHistorico(${index})">Carregar</button>
+                <button class="btn btn-sm btn-danger" onclick="excluirHistorico(${index})">🗑️</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function carregarDoHistorico(index) {
+    let sel = historicoRedacoes[index];
+    redacaoAtual = { ...sel.conteudo };
+    document.getElementById('red-intro').value = redacaoAtual.intro;
+    document.getElementById('red-arg1').value = redacaoAtual.arg1;
+    document.getElementById('red-arg2').value = redacaoAtual.arg2;
+    document.getElementById('red-concl').value = redacaoAtual.concl;
+    document.getElementById('box-tema').innerHTML = `<b>Tema Sorteado:</b> ${redacaoAtual.tema}`;
+    atualizarContadores();
+    alert("Redação carregada com sucesso!");
+}
+
+function excluirHistorico(index) {
+    if (confirm("Deseja apagar este registro do histórico?")) {
+        historicoRedacoes.splice(index, 1);
+        localStorage.setItem('mod_red_historico', JSON.stringify(historicoRedacoes));
+        renderizarHistorico();
+    }
+}
+
+function mostrarToast(mensagem) {
+    const toast = document.getElementById('toast-feedback');
+    toast.innerText = mensagem;
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, 3500);
+}
+
+function enviarParaAvaliacaoIA() {
+    let tema = redacaoAtual.tema || "Tema Não Definido";
+    let intro = document.getElementById('red-intro').value;
+    let arg1 = document.getElementById('red-arg1').value;
+    let arg2 = document.getElementById('red-arg2').value;
+    let concl = document.getElementById('red-concl').value;
+
+    if (!intro && !arg1) {
+        alert("Escreva pelo menos parte do texto antes de enviar para correção!");
+        return;
+    }
+
+    let prompt = `Aja como um avaliador rigoroso de redação da banca VUNESP. Avalie o texto abaixo considerando os critérios oficiais: Tema/Texto (fuga ao tema, progressão), Estrutura/Coesão (paragrafação, conectivos) e Expressão/Gramática (pontuação, crase, concordância, ortografia). Atribua uma nota de 0 a 10 e aponte detalhadamente os erros cometidos.\n\n` +
+                 `TEMA: ${tema}\n\n` +
+                 `TEXTO DO ALUNO:\n` +
+                 `INTRODUÇÃO:\n${intro}\n\n` +
+                 `DESENVOLVIMENTO 1:\n${arg1}\n\n` +
+                 `DESENVOLVIMENTO 2:\n${arg2}\n\n` +
+                 `CONCLUSÃO:\n${concl}`;
+
+    navigator.clipboard.writeText(prompt).then(() => {
+        mostrarToast("Prompt copiado com sucesso! Abrindo o Gemini...");
+        setTimeout(() => {
+            window.open('https://gemini.google.com/app', '_blank');
+        }, 1000);
+    }).catch(() => {
+        alert("Erro ao copiar o texto automaticamente.");
+    });
+}
+
+function exportarTextoRedacao() {
+    let tema = redacaoAtual.tema || "Tema Não Definido";
+    let conteudo = `=== REDAÇÃO TREINO — TJSP (VUNESP) ===\nTema: ${tema}\n\n[INTRODUÇÃO]\n${document.getElementById('red-intro').value}\n\n[DESENVOLVIMENTO 1]\n${document.getElementById('red-arg1').value}\n\n[DESENVOLVIMENTO 2]\n${document.getElementById('red-arg2').value}\n\n[CONCLUSÃO]\n${document.getElementById('red-concl').value}`;
+
+    const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Redacao_TJSP_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+}
+</script>
+
+</body>
+</html>
